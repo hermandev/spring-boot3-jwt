@@ -1,6 +1,7 @@
 package id.codecorn.springjwt.service;
 
 import java.security.Key;
+import java.util.function.Function;
 
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,12 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String extractUsername(String jwt) {
         return null;
+    }
+
+    @Override
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extrAllClaims(token);
+        return claimsResolver.apply(claims);
     }
 
     private Claims extrAllClaims(String token) {
