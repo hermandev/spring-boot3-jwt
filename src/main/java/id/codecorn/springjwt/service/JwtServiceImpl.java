@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -46,12 +48,14 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String generateToken(Map<String, Object> extractClaims, UserDetails userDetails) {
+        extractClaims.put("roles", userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList()));
         return Jwts
                 .builder()
-                .setClaims(extractClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .addClaims(extractClaims)
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
