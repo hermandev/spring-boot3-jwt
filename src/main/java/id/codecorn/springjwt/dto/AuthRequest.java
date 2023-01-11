@@ -3,7 +3,7 @@ package id.codecorn.springjwt.dto;
 import lombok.Data;
 
 @Data
-public class AuthReques {
+public class AuthRequest {
     private String username;
     private String password;
 }
